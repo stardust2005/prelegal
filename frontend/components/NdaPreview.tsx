@@ -1,5 +1,7 @@
-import { NdaFormData } from "@/types/nda";
+import { NdaFormData, NDA_FIELDS } from "@/types/nda";
 import { NDA_ATTRIBUTION, NDA_CLAUSES, getClauseSegments } from "@/lib/ndaTemplate";
+
+const SUMMARY_FIELDS = NDA_FIELDS.filter((field) => field.group === "terms");
 
 interface NdaPreviewProps {
   values: NdaFormData;
@@ -27,12 +29,9 @@ export default function NdaPreview({ values }: NdaPreviewProps) {
           />
         </div>
         <dl className="grid grid-cols-1 gap-2 sm:grid-cols-2">
-          <SummaryItem label="Purpose" value={values.purpose} />
-          <SummaryItem label="Effective Date" value={values.effectiveDate} />
-          <SummaryItem label="MNDA Term" value={values.mndaTerm} />
-          <SummaryItem label="Term of Confidentiality" value={values.termOfConfidentiality} />
-          <SummaryItem label="Governing Law" value={values.governingLaw} />
-          <SummaryItem label="Jurisdiction" value={values.jurisdiction} />
+          {SUMMARY_FIELDS.map((field) => (
+            <SummaryItem key={field.key} label={field.label} value={values[field.key]} />
+          ))}
         </dl>
       </header>
 

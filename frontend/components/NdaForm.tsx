@@ -1,44 +1,34 @@
 "use client";
 
-import { NdaFormData, NDA_FIELDS } from "@/types/nda";
+import { NdaField, NdaFieldGroup, NdaFormData, NDA_FIELDS } from "@/types/nda";
 
 interface NdaFormProps {
   values: NdaFormData;
   onChange: (key: keyof NdaFormData, value: string) => void;
 }
 
-const PARTY_A_KEYS = new Set(["partyAName", "partyAAddress", "partyASignatory"]);
-const PARTY_B_KEYS = new Set(["partyBName", "partyBAddress", "partyBSignatory"]);
+const GROUPS: { group: NdaFieldGroup; title: string }[] = [
+  { group: "partyA", title: "Party A" },
+  { group: "partyB", title: "Party B" },
+  { group: "terms", title: "Agreement Terms" },
+];
 
 export default function NdaForm({ values, onChange }: NdaFormProps) {
-  const partyAFields = NDA_FIELDS.filter((f) => PARTY_A_KEYS.has(f.key));
-  const partyBFields = NDA_FIELDS.filter((f) => PARTY_B_KEYS.has(f.key));
-  const termFields = NDA_FIELDS.filter(
-    (f) => !PARTY_A_KEYS.has(f.key) && !PARTY_B_KEYS.has(f.key)
-  );
-
   return (
     <form className="flex flex-col gap-6" onSubmit={(e) => e.preventDefault()}>
-      <fieldset className="flex flex-col gap-3">
-        <legend className="text-sm font-semibold text-zinc-900">Party A</legend>
-        {partyAFields.map((field) => (
-          <FormField key={field.key} field={field} value={values[field.key]} onChange={onChange} />
-        ))}
-      </fieldset>
-
-      <fieldset className="flex flex-col gap-3">
-        <legend className="text-sm font-semibold text-zinc-900">Party B</legend>
-        {partyBFields.map((field) => (
-          <FormField key={field.key} field={field} value={values[field.key]} onChange={onChange} />
-        ))}
-      </fieldset>
-
-      <fieldset className="flex flex-col gap-3">
-        <legend className="text-sm font-semibold text-zinc-900">Agreement Terms</legend>
-        {termFields.map((field) => (
-          <FormField key={field.key} field={field} value={values[field.key]} onChange={onChange} />
-        ))}
-      </fieldset>
+      {GROUPS.map(({ group, title }) => (
+        <fieldset key={group} className="flex flex-col gap-3">
+          <legend className="text-sm font-semibold text-zinc-900">{title}</legend>
+          {NDA_FIELDS.filter((field) => field.group === group).map((field) => (
+            <FormField
+              key={field.key}
+              field={field}
+              value={values[field.key]}
+              onChange={onChange}
+            />
+          ))}
+        </fieldset>
+      ))}
     </form>
   );
 }
@@ -48,7 +38,7 @@ function FormField({
   value,
   onChange,
 }: {
-  field: { key: keyof NdaFormData; label: string; placeholder: string };
+  field: NdaField;
   value: string;
   onChange: (key: keyof NdaFormData, value: string) => void;
 }) {

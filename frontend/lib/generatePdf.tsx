@@ -1,8 +1,15 @@
 "use client";
 
 import { Document, Page, StyleSheet, Text, View, pdf } from "@react-pdf/renderer";
-import { NdaFormData } from "@/types/nda";
+import type { Style } from "@react-pdf/types";
+import { NdaFormData, NDA_FIELDS } from "@/types/nda";
 import { NDA_ATTRIBUTION, NDA_CLAUSES, getClauseSegments } from "@/lib/ndaTemplate";
+
+const SUMMARY_FIELDS = NDA_FIELDS.filter((field) => field.group === "terms");
+
+function activeStyles(...styles: (Style | false | undefined)[]): Style[] {
+  return styles.filter((style): style is Style => Boolean(style));
+}
 
 const styles = StyleSheet.create({
   page: { padding: 48, fontSize: 10, lineHeight: 1.5 },
@@ -29,25 +36,22 @@ function NdaPdfDocument({ values }: { values: NdaFormData }) {
         <View style={styles.partyRow}>
           <View style={styles.partyBlock}>
             <Text style={styles.partyLabel}>Party A</Text>
-            <Text>{values.partyAName || "[Party A Name]"}</Text>
-            <Text>{values.partyAAddress || "[Party A Address]"}</Text>
-            <Text>Signatory: {values.partyASignatory || "[Party A Signatory]"}</Text>
+            <Text>{values.partyAName || "[Name]"}</Text>
+            <Text>{values.partyAAddress || "[Address]"}</Text>
+            <Text>Signatory: {values.partyASignatory || "[Signatory]"}</Text>
           </View>
           <View style={styles.partyBlock}>
             <Text style={styles.partyLabel}>Party B</Text>
-            <Text>{values.partyBName || "[Party B Name]"}</Text>
-            <Text>{values.partyBAddress || "[Party B Address]"}</Text>
-            <Text>Signatory: {values.partyBSignatory || "[Party B Signatory]"}</Text>
+            <Text>{values.partyBName || "[Name]"}</Text>
+            <Text>{values.partyBAddress || "[Address]"}</Text>
+            <Text>Signatory: {values.partyBSignatory || "[Signatory]"}</Text>
           </View>
         </View>
 
         <View style={styles.summaryRow}>
-          <SummaryItem label="Purpose" value={values.purpose} />
-          <SummaryItem label="Effective Date" value={values.effectiveDate} />
-          <SummaryItem label="MNDA Term" value={values.mndaTerm} />
-          <SummaryItem label="Term of Confidentiality" value={values.termOfConfidentiality} />
-          <SummaryItem label="Governing Law" value={values.governingLaw} />
-          <SummaryItem label="Jurisdiction" value={values.jurisdiction} />
+          {SUMMARY_FIELDS.map((field) => (
+            <SummaryItem key={field.key} label={field.label} value={values[field.key]} />
+          ))}
         </View>
 
         <Text style={styles.sectionTitle}>Standard Terms</Text>
@@ -57,13 +61,7 @@ function NdaPdfDocument({ values }: { values: NdaFormData }) {
               {clause.number}. {clause.title}.{" "}
             </Text>
             {getClauseSegments(clause.body, values).map((segment, i) => (
-              <Text
-                key={i}
-                style={[
-                  ...(segment.bold ? [styles.bold] : []),
-                  ...(segment.filled ? [styles.filled] : []),
-                ]}
-              >
+              <Text key={i} style={activeStyles(segment.bold && styles.bold, segment.filled && styles.filled)}>
                 {segment.text}
               </Text>
             ))}
