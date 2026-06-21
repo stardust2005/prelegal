@@ -1,0 +1,57 @@
+[
+  {
+    "name": "Mutual Non-Disclosure Agreement",
+    "description": "Acuerdo de confidencialidad mutuo que permite a ambas partes compartir información confidencial en el contexto de una posible relación comercial.",
+    "filename": "mutual-nda.md"
+  },
+  {
+    "name": "Cloud Service Agreement",
+    "description": "Acuerdo estándar para la prestación de servicios en la nube entre un proveedor y un cliente.",
+    "filename": "csa.md"
+  },
+  {
+    "name": "Service Level Agreement",
+    "description": "Anexo que define los niveles de disponibilidad, tiempos de respuesta y créditos de servicio asociados a un servicio en la nube.",
+    "filename": "sla.md"
+  },
+  {
+    "name": "Data Processing Agreement",
+    "description": "Acuerdo que regula el tratamiento de datos personales por parte de un proveedor en nombre de un cliente, conforme a las leyes de protección de datos.",
+    "filename": "dpa.md"
+  },
+  {
+    "name": "Design Partner Agreement",
+    "description": "Acuerdo para colaboraciones tempranas entre una empresa y un cliente piloto que aporta feedback sobre el diseño de un producto a cambio de condiciones preferentes.",
+    "filename": "design-partner-agreement.md"
+  },
+  {
+    "name": "Professional Services Agreement",
+    "description": "Acuerdo estándar para la prestación de servicios profesionales, como consultoría o implementación, entre un proveedor y un cliente.",
+    "filename": "psa.md"
+  },
+  {
+    "name": "Partnership Agreement",
+    "description": "Acuerdo de colaboración comercial entre dos empresas que desean asociarse para promover o revender productos o servicios.",
+    "filename": "partnership-agreement.md"
+  },
+  {
+    "name": "Business Associate Agreement",
+    "description": "Acuerdo requerido por la normativa HIPAA que regula el tratamiento de información de salud protegida por parte de un proveedor en nombre de una entidad cubierta.",
+    "filename": "baa.md"
+  },
+  {
+    "name": "Software License Agreement",
+    "description": "Acuerdo estándar de licencia de software entre un proveedor y un cliente para el uso de un producto de software.",
+    "filename": "software-license-agreement.md"
+  },
+  {
+    "name": "Pilot Agreement",
+    "description": "Contrato de corta duración que permite a un cliente potencial probar un producto o servicio antes de comprometerse a un acuerdo comercial a largo plazo.",
+    "filename": "pilot-agreement.md"
+  },
+  {
+    "name": "AI Addendum",
+    "description": "Anexo que regula el uso de servicios de inteligencia artificial, incluyendo el tratamiento de entradas y salidas y las restricciones de entrenamiento de modelos.",
+    "filename": "ai-addendum.md"
+  }
+]
