@@ -1,9 +1,9 @@
 import { NdaFormData } from "@/types/nda";
 
 /**
- * Clause text is transcribed from ../../Templates/mutual-nda.md (Common Paper
- * Mutual NDA Standard Terms v1.0, CC BY 4.0), with the cover-page placeholders
- * rewritten as {{fieldKey}} tokens so they can be filled in from NdaFormData.
+ * Clause text is transcribed (in Spanish) from ../../Templates/mutual-nda.md
+ * (Common Paper Mutual NDA Standard Terms v1.0, CC BY 4.0), with the cover-page
+ * placeholders rewritten as {{fieldKey}} tokens so they can be filled in from NdaFormData.
  */
 export interface NdaClause {
   number: number;
@@ -14,63 +14,63 @@ export interface NdaClause {
 export const NDA_CLAUSES: NdaClause[] = [
   {
     number: 1,
-    title: "Introduction",
-    body: "This Mutual Non-Disclosure Agreement (which incorporates these Standard Terms and the Cover Page (defined below)) (“**MNDA**”) allows each party (“**Disclosing Party**”) to disclose or make available information in connection with the {{purpose}} which (1) the Disclosing Party identifies to the receiving party (“**Receiving Party**”) as “confidential”, “proprietary”, or the like or (2) should be reasonably understood as confidential or proprietary due to its nature and the circumstances of its disclosure (“**Confidential Information**”). Each party’s Confidential Information also includes the existence and status of the parties’ discussions and information on the Cover Page. Confidential Information includes technical or business information, product designs or roadmaps, requirements, pricing, security and compliance documentation, technology, inventions and know-how. To use this MNDA, the parties must complete and sign a cover page incorporating these Standard Terms (“**Cover Page**”). Each party is identified on the Cover Page and capitalized terms have the meanings given herein or on the Cover Page.",
+    title: "Introducción",
+    body: "Este Acuerdo de Confidencialidad Mutuo (que incorpora estos Términos Estándar y la Portada (definida más adelante)) (“**MNDA**”) permite a cada parte (“**Parte Divulgadora**”) divulgar o poner a disposición información en relación con el {{purpose}} que (1) la Parte Divulgadora identifique ante la parte receptora (“**Parte Receptora**”) como “confidencial”, “propietaria” o similar, o (2) deba razonablemente entenderse como confidencial o propietaria debido a su naturaleza y a las circunstancias de su divulgación (“**Información Confidencial**”). La Información Confidencial de cada parte también incluye la existencia y el estado de las conversaciones entre las partes y la información contenida en la Portada. La Información Confidencial incluye información técnica o comercial, diseños o hojas de ruta de productos, requisitos, precios, documentación de seguridad y cumplimiento, tecnología, invenciones y know-how. Para utilizar este MNDA, las partes deben completar y firmar una portada que incorpore estos Términos Estándar (“**Portada**”). Cada parte se identifica en la Portada y los términos en mayúscula tienen el significado que se les atribuye en este documento o en la Portada.",
   },
   {
     number: 2,
-    title: "Use and Protection of Confidential Information",
-    body: "The Receiving Party shall: (a) use Confidential Information solely for the {{purpose}}; (b) not disclose Confidential Information to third parties without the Disclosing Party’s prior written approval, except that the Receiving Party may disclose Confidential Information to its employees, agents, advisors, contractors and other representatives having a reasonable need to know for the {{purpose}}, provided these representatives are bound by confidentiality obligations no less protective of the Disclosing Party than the applicable terms in this MNDA and the Receiving Party remains responsible for their compliance with this MNDA; and (c) protect Confidential Information using at least the same protections the Receiving Party uses for its own similar information but no less than a reasonable standard of care.",
+    title: "Uso y Protección de la Información Confidencial",
+    body: "La Parte Receptora deberá: (a) utilizar la Información Confidencial únicamente para el {{purpose}}; (b) no divulgar la Información Confidencial a terceros sin la aprobación previa por escrito de la Parte Divulgadora, salvo que la Parte Receptora podrá divulgarla a sus empleados, agentes, asesores, contratistas y otros representantes que tengan una necesidad razonable de conocerla para el {{purpose}}, siempre que dichos representantes estén sujetos a obligaciones de confidencialidad no menos protectoras para la Parte Divulgadora que los términos aplicables de este MNDA, y que la Parte Receptora siga siendo responsable de su cumplimiento; y (c) proteger la Información Confidencial utilizando, como mínimo, las mismas protecciones que la Parte Receptora utiliza para su propia información similar, y nunca por debajo de un estándar de cuidado razonable.",
   },
   {
     number: 3,
-    title: "Exceptions",
-    body: "The Receiving Party’s obligations in this MNDA do not apply to information that it can demonstrate: (a) is or becomes publicly available through no fault of the Receiving Party; (b) it rightfully knew or possessed prior to receipt from the Disclosing Party without confidentiality restrictions; (c) it rightfully obtained from a third party without confidentiality restrictions; or (d) it independently developed without using or referencing the Confidential Information.",
+    title: "Excepciones",
+    body: "Las obligaciones de la Parte Receptora en este MNDA no se aplican a la información que pueda demostrar que: (a) es o se hace pública sin culpa de la Parte Receptora; (b) la conocía o poseía legítimamente antes de recibirla de la Parte Divulgadora, sin restricciones de confidencialidad; (c) la obtuvo legítimamente de un tercero sin restricciones de confidencialidad; o (d) la desarrolló de forma independiente sin utilizar ni hacer referencia a la Información Confidencial.",
   },
   {
     number: 4,
-    title: "Disclosures Required by Law",
-    body: "The Receiving Party may disclose Confidential Information to the extent required by law, regulation or regulatory authority, subpoena or court order, provided (to the extent legally permitted) it provides the Disclosing Party reasonable advance notice of the required disclosure and reasonably cooperates, at the Disclosing Party’s expense, with the Disclosing Party’s efforts to obtain confidential treatment for the Confidential Information.",
+    title: "Divulgaciones Exigidas por Ley",
+    body: "La Parte Receptora podrá divulgar la Información Confidencial en la medida exigida por ley, normativa o autoridad regulatoria, citación u orden judicial, siempre que (en la medida legalmente permitida) proporcione a la Parte Divulgadora un aviso razonable y previo de la divulgación requerida, y colabore razonablemente, a costa de la Parte Divulgadora, en los esfuerzos de esta para obtener un tratamiento confidencial de la Información Confidencial.",
   },
   {
     number: 5,
-    title: "Term and Termination",
-    body: "This MNDA commences on the {{effectiveDate}} and expires at the end of the {{mndaTerm}}. Either party may terminate this MNDA for any or no reason upon written notice to the other party. The Receiving Party’s obligations relating to Confidential Information will survive for the {{termOfConfidentiality}}, despite any expiration or termination of this MNDA.",
+    title: "Vigencia y Terminación",
+    body: "Este MNDA entra en vigor en la {{effectiveDate}} y vence al finalizar el {{mndaTerm}}. Cualquiera de las partes podrá terminar este MNDA, con o sin motivo, mediante notificación escrita a la otra parte. Las obligaciones de la Parte Receptora relativas a la Información Confidencial sobrevivirán durante el {{termOfConfidentiality}}, a pesar de cualquier vencimiento o terminación de este MNDA.",
   },
   {
     number: 6,
-    title: "Return or Destruction of Confidential Information",
-    body: "Upon expiration or termination of this MNDA or upon the Disclosing Party’s earlier request, the Receiving Party will: (a) cease using Confidential Information; (b) promptly after the Disclosing Party’s written request, destroy all Confidential Information in the Receiving Party’s possession or control or return it to the Disclosing Party; and (c) if requested by the Disclosing Party, confirm its compliance with these obligations in writing. As an exception to subsection (b), the Receiving Party may retain Confidential Information in accordance with its standard backup or record retention policies or as required by law, but the terms of this MNDA will continue to apply to the retained Confidential Information.",
+    title: "Devolución o Destrucción de la Información Confidencial",
+    body: "Al vencimiento o terminación de este MNDA, o ante la solicitud previa de la Parte Divulgadora, la Parte Receptora deberá: (a) cesar el uso de la Información Confidencial; (b) inmediatamente después de la solicitud por escrito de la Parte Divulgadora, destruir toda la Información Confidencial en su posesión o control, o devolverla a la Parte Divulgadora; y (c) si la Parte Divulgadora lo solicita, confirmar por escrito el cumplimiento de estas obligaciones. Como excepción al apartado (b), la Parte Receptora podrá conservar la Información Confidencial de acuerdo con sus políticas estándar de copias de seguridad o retención de registros, o según lo exija la ley, pero los términos de este MNDA seguirán aplicándose a la Información Confidencial conservada.",
   },
   {
     number: 7,
-    title: "Proprietary Rights",
-    body: "The Disclosing Party retains all of its intellectual property and other rights in its Confidential Information and its disclosure to the Receiving Party grants no license under such rights.",
+    title: "Derechos de Propiedad",
+    body: "La Parte Divulgadora conserva todos sus derechos de propiedad intelectual y demás derechos sobre su Información Confidencial, y su divulgación a la Parte Receptora no concede ninguna licencia sobre dichos derechos.",
   },
   {
     number: 8,
-    title: "Disclaimer",
-    body: "ALL CONFIDENTIAL INFORMATION IS PROVIDED “AS IS”, WITH ALL FAULTS, AND WITHOUT WARRANTIES, INCLUDING THE IMPLIED WARRANTIES OF TITLE, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.",
+    title: "Exención de Responsabilidad",
+    body: "TODA LA INFORMACIÓN CONFIDENCIAL SE PROPORCIONA “TAL CUAL”, CON TODOS SUS DEFECTOS Y SIN GARANTÍAS, INCLUIDAS LAS GARANTÍAS IMPLÍCITAS DE TITULARIDAD, COMERCIABILIDAD E IDONEIDAD PARA UN PROPÓSITO PARTICULAR.",
   },
   {
     number: 9,
-    title: "Governing Law and Jurisdiction",
-    body: "This MNDA and all matters relating hereto are governed by, and construed in accordance with, the laws of the State of {{governingLaw}}, without regard to the conflict of laws provisions of such {{governingLaw}}. Any legal suit, action, or proceeding relating to this MNDA must be instituted in the federal or state courts located in {{jurisdiction}}. Each party irrevocably submits to the exclusive jurisdiction of such {{jurisdiction}} in any such suit, action, or proceeding.",
+    title: "Ley Aplicable y Jurisdicción",
+    body: "Este MNDA y todos los asuntos relacionados con él se rigen e interpretan de conformidad con las leyes del Estado de {{governingLaw}}, sin tener en cuenta las disposiciones sobre conflicto de leyes de dicha {{governingLaw}}. Cualquier demanda, acción o procedimiento legal relacionado con este MNDA deberá iniciarse en los tribunales federales o estatales ubicados en {{jurisdiction}}. Cada parte se somete irrevocablemente a la jurisdicción exclusiva de dicha {{jurisdiction}} en cualquier demanda, acción o procedimiento de ese tipo.",
   },
   {
     number: 10,
-    title: "Equitable Relief",
-    body: "A breach of this MNDA may cause irreparable harm for which monetary damages are an insufficient remedy. Upon a breach of this MNDA, the Disclosing Party is entitled to seek appropriate equitable relief, including an injunction, in addition to its other remedies.",
+    title: "Medidas Cautelares",
+    body: "El incumplimiento de este MNDA puede causar un daño irreparable para el cual los daños monetarios serían un remedio insuficiente. Ante un incumplimiento de este MNDA, la Parte Divulgadora tiene derecho a solicitar las medidas cautelares apropiadas, incluida una orden judicial de cesación, además de sus demás recursos.",
   },
   {
     number: 11,
-    title: "General",
-    body: "Neither party has an obligation under this MNDA to disclose Confidential Information to the other or proceed with any proposed transaction. Neither party may assign this MNDA without the prior written consent of the other party, except that either party may assign this MNDA in connection with a merger, reorganization, acquisition or other transfer of all or substantially all its assets or voting securities. Any assignment in violation of this Section is null and void. This MNDA will bind and inure to the benefit of each party’s permitted successors and assigns. Waivers must be signed by the waiving party’s authorized representative and cannot be implied from conduct. If any provision of this MNDA is held unenforceable, it will be limited to the minimum extent necessary so the rest of this MNDA remains in effect. This MNDA (including the Cover Page) constitutes the entire agreement of the parties with respect to its subject matter, and supersedes all prior and contemporaneous understandings, agreements, representations, and warranties, whether written or oral, regarding such subject matter. This MNDA may only be amended, modified, waived, or supplemented by an agreement in writing signed by both parties. Notices, requests and approvals under this MNDA must be sent in writing to the email or postal addresses on the Cover Page and are deemed delivered on receipt. This MNDA may be executed in counterparts, including electronic copies, each of which is deemed an original and which together form the same agreement.",
+    title: "Disposiciones Generales",
+    body: "Ninguna de las partes tiene la obligación, en virtud de este MNDA, de divulgar Información Confidencial a la otra ni de proseguir con ninguna transacción propuesta. Ninguna de las partes podrá cesionar este MNDA sin el consentimiento previo por escrito de la otra parte, salvo que cualquiera de las partes podrá cederlo en relación con una fusión, reorganización, adquisición u otra transferencia de la totalidad o sustancialmente la totalidad de sus activos o valores con derecho a voto. Cualquier cesión que infrinja esta Sección será nula y sin efecto. Este MNDA vinculará y beneficiará a los sucesores y cesionarios permitidos de cada parte. Las renuncias deberán ser firmadas por el representante autorizado de la parte que renuncia y no podrán inferirse de la conducta. Si alguna disposición de este MNDA se considera inaplicable, se limitará en la medida mínima necesaria para que el resto del MNDA siga vigente. Este MNDA (incluida la Portada) constituye el acuerdo íntegro entre las partes respecto de su objeto, y sustituye todo entendimiento, acuerdo, declaración y garantía previos y contemporáneos, ya sea escrito u oral, relativo a dicho objeto. Este MNDA solo podrá modificarse, enmendarse, renunciarse o complementarse mediante un acuerdo por escrito firmado por ambas partes. Las notificaciones, solicitudes y aprobaciones bajo este MNDA deberán enviarse por escrito a las direcciones de correo electrónico o postales indicadas en la Portada, y se considerarán entregadas en el momento de su recepción. Este MNDA podrá firmarse en varios ejemplares, incluidas copias electrónicas, cada uno de los cuales se considerará un original y que en conjunto constituirán un mismo acuerdo.",
   },
 ];
 
 export const NDA_ATTRIBUTION =
-  "Common Paper Mutual Non-Disclosure Agreement Version 1.0 (commonpaper.com/standards/mutual-nda/1.0), free to use under CC BY 4.0 (creativecommons.org/licenses/by/4.0).";
+  "Acuerdo de Confidencialidad Mutuo de Common Paper, Versión 1.0 (commonpaper.com/standards/mutual-nda/1.0), de uso libre bajo licencia CC BY 4.0 (creativecommons.org/licenses/by/4.0).";
 
 export interface ClauseSegment {
   text: string;
@@ -79,18 +79,18 @@ export interface ClauseSegment {
 }
 
 const PLACEHOLDER_FALLBACK: Record<keyof NdaFormData, string> = {
-  partyAName: "[Party A Name]",
-  partyAAddress: "[Party A Address]",
-  partyASignatory: "[Party A Signatory]",
-  partyBName: "[Party B Name]",
-  partyBAddress: "[Party B Address]",
-  partyBSignatory: "[Party B Signatory]",
-  purpose: "[Purpose]",
-  effectiveDate: "[Effective Date]",
-  mndaTerm: "[MNDA Term]",
-  termOfConfidentiality: "[Term of Confidentiality]",
-  governingLaw: "[Governing Law]",
-  jurisdiction: "[Jurisdiction]",
+  partyAName: "[Nombre de la Parte A]",
+  partyAAddress: "[Dirección de la Parte A]",
+  partyASignatory: "[Firmante de la Parte A]",
+  partyBName: "[Nombre de la Parte B]",
+  partyBAddress: "[Dirección de la Parte B]",
+  partyBSignatory: "[Firmante de la Parte B]",
+  purpose: "[Propósito]",
+  effectiveDate: "[Fecha de Vigencia]",
+  mndaTerm: "[Plazo del MNDA]",
+  termOfConfidentiality: "[Plazo de Confidencialidad]",
+  governingLaw: "[Ley Aplicable]",
+  jurisdiction: "[Jurisdicción]",
 };
 
 /** Splits clause body text into plain/bold/filled-placeholder segments for rendering. */

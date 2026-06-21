@@ -33,13 +33,13 @@ describe("getClauseSegments", () => {
 
   it("falls back to a bracketed placeholder label when the value is empty", () => {
     expect(getClauseSegments("{{purpose}}", values())).toEqual([
-      { text: "[Purpose]", bold: false, filled: true },
+      { text: "[Propósito]", bold: false, filled: true },
     ]);
   });
 
   it("falls back to the bracketed label when the value is whitespace-only", () => {
     expect(getClauseSegments("{{governingLaw}}", values({ governingLaw: "   " }))).toEqual([
-      { text: "[Governing Law]", bold: false, filled: true },
+      { text: "[Ley Aplicable]", bold: false, filled: true },
     ]);
   });
 
@@ -91,11 +91,11 @@ describe("NDA_CLAUSES", () => {
     const text = getClauseSegments(intro.body, values({ purpose: "a pilot evaluation" }))
       .map((s) => s.text)
       .join("");
-    expect(text).toContain("in connection with the a pilot evaluation which");
+    expect(text).toContain("en relación con el a pilot evaluation que");
   });
 
   it("substitutes Effective Date, MNDA Term and Term of Confidentiality into clause 5", () => {
-    const termClause = NDA_CLAUSES.find((c) => c.title === "Term and Termination")!;
+    const termClause = NDA_CLAUSES.find((c) => c.title === "Vigencia y Terminación")!;
     const text = getClauseSegments(
       termClause.body,
       values({
@@ -106,12 +106,12 @@ describe("NDA_CLAUSES", () => {
     )
       .map((s) => s.text)
       .join("");
-    expect(text).toContain("commences on the June 21, 2026 and expires at the end of the 2 years");
-    expect(text).toContain("survive for the 3 years");
+    expect(text).toContain("entra en vigor en la June 21, 2026 y vence al finalizar el 2 years");
+    expect(text).toContain("sobrevivirán durante el 3 years");
   });
 
   it("substitutes Governing Law (x2) and Jurisdiction (x2) into clause 9", () => {
-    const govClause = NDA_CLAUSES.find((c) => c.title === "Governing Law and Jurisdiction")!;
+    const govClause = NDA_CLAUSES.find((c) => c.title === "Ley Aplicable y Jurisdicción")!;
     const segments = getClauseSegments(
       govClause.body,
       values({ governingLaw: "Delaware", jurisdiction: "Wilmington, Delaware" })

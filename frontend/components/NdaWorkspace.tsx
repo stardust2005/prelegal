@@ -36,7 +36,7 @@ export default function NdaWorkspace() {
           disabled={isDownloading}
           className="self-start rounded-md bg-zinc-900 px-4 py-2 text-sm font-medium text-white hover:bg-zinc-700 disabled:opacity-50"
         >
-          {isDownloading ? "Generating PDF…" : "Download as PDF"}
+          {isDownloading ? "Generando PDF…" : "Descargar como PDF"}
         </button>
 
         <div className="rounded-lg border border-zinc-200 bg-white p-6">

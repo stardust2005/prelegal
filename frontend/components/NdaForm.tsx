@@ -8,9 +8,9 @@ interface NdaFormProps {
 }
 
 const GROUPS: { group: NdaFieldGroup; title: string }[] = [
-  { group: "partyA", title: "Party A" },
-  { group: "partyB", title: "Party B" },
-  { group: "terms", title: "Agreement Terms" },
+  { group: "partyA", title: "Parte A" },
+  { group: "partyB", title: "Parte B" },
+  { group: "terms", title: "Términos del Acuerdo" },
 ];
 
 export default function NdaForm({ values, onChange }: NdaFormProps) {

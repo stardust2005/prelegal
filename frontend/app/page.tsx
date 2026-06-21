@@ -1,17 +1,10 @@
-import NdaWorkspace from "@/components/NdaWorkspace";
+import LoginForm from "@/components/LoginForm";
 
-export default function Home() {
+export default function Login() {
   return (
-    <div className="flex flex-1 flex-col bg-zinc-50">
-      <header className="border-b border-zinc-200 bg-white px-6 py-4">
-        <h1 className="text-xl font-semibold text-zinc-900">Mutual NDA Generator</h1>
-        <p className="text-sm text-zinc-600">
-          Fill in the details below to generate a Common Paper Mutual NDA, then download it as a
-          PDF.
-        </p>
-      </header>
-
-      <NdaWorkspace />
+    <div className="flex flex-1 flex-col items-center justify-center bg-zinc-50 px-6">
+      <h1 className="mb-6 text-xl font-semibold text-[#032147]">PreLegal</h1>
+      <LoginForm />
     </div>
   );
 }

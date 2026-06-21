@@ -12,17 +12,17 @@ export default function NdaPreview({ values }: NdaPreviewProps) {
     <article className="flex flex-col gap-6 text-sm leading-6 text-zinc-800">
       <header className="flex flex-col gap-4 border-b border-zinc-200 pb-6">
         <h1 className="text-lg font-semibold text-zinc-900">
-          Mutual Non-Disclosure Agreement — Cover Page
+          Acuerdo de Confidencialidad Mutuo — Portada
         </h1>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <PartyBlock
-            label="Party A"
+            label="Parte A"
             name={values.partyAName}
             address={values.partyAAddress}
             signatory={values.partyASignatory}
           />
           <PartyBlock
-            label="Party B"
+            label="Parte B"
             name={values.partyBName}
             address={values.partyBAddress}
             signatory={values.partyBSignatory}
@@ -35,7 +35,7 @@ export default function NdaPreview({ values }: NdaPreviewProps) {
         </dl>
       </header>
 
-      <h2 className="text-base font-semibold text-zinc-900">Standard Terms</h2>
+      <h2 className="text-base font-semibold text-zinc-900">Términos Estándar</h2>
       <ol className="flex flex-col gap-4">
         {NDA_CLAUSES.map((clause) => (
           <li key={clause.number}>
@@ -77,9 +77,9 @@ function PartyBlock({
   return (
     <div className="flex flex-col gap-1 rounded-md border border-zinc-200 p-3">
       <span className="text-xs font-semibold uppercase text-zinc-500">{label}</span>
-      <span className="font-medium">{name || "[Name]"}</span>
-      <span className="text-zinc-600">{address || "[Address]"}</span>
-      <span className="text-zinc-600">Signatory: {signatory || "[Signatory]"}</span>
+      <span className="font-medium">{name || "[Nombre]"}</span>
+      <span className="text-zinc-600">{address || "[Dirección]"}</span>
+      <span className="text-zinc-600">Firmante: {signatory || "[Firmante]"}</span>
     </div>
   );
 }

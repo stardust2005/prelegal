@@ -22,6 +22,8 @@ htmlcov/
 .coverage.*
 celerybeat-schedule
 instance/
+*.db
+backend/data/
 
 # --- Node.js / Next.js ---
 node_modules/

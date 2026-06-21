@@ -3,18 +3,18 @@ import { expect, test, type Page } from "@playwright/test";
 import { PDFParse } from "pdf-parse";
 
 const HAPPY_PATH_VALUES = {
-  "Party A — Name": "Acme, Inc.",
-  "Party A — Address": "123 Main St, Wilmington, DE",
-  "Party A — Signatory": "Jane Smith, CEO",
-  "Party B — Name": "Beta LLC",
-  "Party B — Address": "456 Market St, Austin, TX",
-  "Party B — Signatory": "John Doe, Founder",
-  Purpose: "Evaluating a potential business relationship",
-  "Effective Date": "June 21, 2026",
-  "MNDA Term": "2 years from the Effective Date",
-  "Term of Confidentiality": "3 years from disclosure",
-  "Governing Law": "Delaware",
-  Jurisdiction: "Wilmington, Delaware",
+  "Parte A — Nombre": "Acme, Inc.",
+  "Parte A — Dirección": "123 Main St, Wilmington, DE",
+  "Parte A — Firmante": "Jane Smith, CEO",
+  "Parte B — Nombre": "Beta LLC",
+  "Parte B — Dirección": "456 Market St, Austin, TX",
+  "Parte B — Firmante": "John Doe, Founder",
+  Propósito: "Evaluar una posible relación comercial",
+  "Fecha de Vigencia": "21 de junio de 2026",
+  "Plazo del MNDA": "2 años desde la Fecha de Vigencia",
+  "Plazo de Confidencialidad": "3 años desde la divulgación",
+  "Ley Aplicable": "Delaware",
+  Jurisdicción: "Wilmington, Delaware",
 };
 
 async function fillForm(page: Page, values: Record<string, string>) {
@@ -25,7 +25,7 @@ async function fillForm(page: Page, values: Record<string, string>) {
 
 async function downloadAndParsePdf(page: Page) {
   const downloadPromise = page.waitForEvent("download");
-  await page.getByRole("button", { name: /Download as PDF/i }).click();
+  await page.getByRole("button", { name: /Descargar como PDF/i }).click();
   const download = await downloadPromise;
   const path = await download.path();
   if (!path) throw new Error("Download did not produce a local file path");
@@ -36,8 +36,8 @@ async function downloadAndParsePdf(page: Page) {
 }
 
 test.beforeEach(async ({ page }) => {
-  await page.goto("/");
-  await expect(page.getByRole("heading", { name: "Mutual NDA Generator" })).toBeVisible();
+  await page.goto("/app/");
+  await expect(page.getByRole("heading", { name: "Generador de NDA Mutuo" })).toBeVisible();
 });
 
 test("happy path: fills the form, updates the live preview, and downloads a matching PDF", async ({
@@ -53,9 +53,9 @@ test("happy path: fills the form, updates the live preview, and downloads a matc
   const preview = page.locator("article");
   await expect(preview).toContainText("Acme, Inc.");
   await expect(preview).toContainText("Beta LLC");
-  await expect(preview).toContainText("Evaluating a potential business relationship");
+  await expect(preview).toContainText("Evaluar una posible relación comercial");
   await expect(preview).toContainText("Delaware");
-  await expect(preview).not.toContainText("[Purpose]");
+  await expect(preview).not.toContainText("[Propósito]");
 
   const { text, pageCount, suggestedFilename } = await downloadAndParsePdf(page);
 
@@ -66,10 +66,10 @@ test("happy path: fills the form, updates the live preview, and downloads a matc
   expect(text).toContain("Acme, Inc.");
   expect(text).toContain("Jane Smith, CEO");
   expect(text).toContain("Beta LLC");
-  expect(text).toContain("Evaluating a potential business relationship");
+  expect(text).toContain("Evaluar una posible relación comercial");
   expect(text).toContain("Wilmington, Delaware");
   // The attribution footer should appear exactly once, not once per page.
-  expect(text.match(/Common Paper Mutual Non-Disclosure Agreement/g)).toHaveLength(1);
+  expect(text.match(/Acuerdo de Confidencialidad Mutuo de Common Paper/g)).toHaveLength(1);
 
   expect(consoleErrors).toEqual([]);
 });
@@ -78,22 +78,22 @@ test("empty form: shows bracketed fallbacks in the preview and still downloads a
   page,
 }) => {
   const preview = page.locator("article");
-  await expect(preview).toContainText("[Purpose]");
-  await expect(preview).toContainText("[Governing Law]");
+  await expect(preview).toContainText("[Propósito]");
+  await expect(preview).toContainText("[Ley Aplicable]");
 
   const { text, pageCount } = await downloadAndParsePdf(page);
 
   expect(pageCount).toBeGreaterThanOrEqual(1);
-  expect(text).toContain("[Purpose]");
-  expect(text).toContain("[Name]");
+  expect(text).toContain("[Propósito]");
+  expect(text).toContain("[Nombre]");
 });
 
 test("preserves special characters (quotes, ampersand, accented letters) end to end", async ({
   page,
 }) => {
   const tricky = {
-    "Party A — Name": `O'Brien & Associates, S.A.`,
-    Purpose: `Evaluación de una posible colaboración (& "joint venture")`,
+    "Parte A — Nombre": `O'Brien & Associates, S.A.`,
+    Propósito: `Evaluación de una posible colaboración (& "joint venture")`,
   };
   await fillForm(page, tricky);
 
@@ -115,7 +115,7 @@ test("very long input wraps across multiple PDF pages without errors", async ({ 
   page.on("pageerror", (err) => consoleErrors.push(String(err)));
 
   const longPurpose = "evaluating a very long-running multi-phase strategic partnership ".repeat(80);
-  await fillForm(page, { Purpose: longPurpose.trim() });
+  await fillForm(page, { Propósito: longPurpose.trim() });
 
   const { pageCount, text } = await downloadAndParsePdf(page);
 

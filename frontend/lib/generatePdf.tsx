@@ -31,20 +31,20 @@ function NdaPdfDocument({ values }: { values: NdaFormData }) {
   return (
     <Document>
       <Page size="A4" style={styles.page}>
-        <Text style={styles.title}>Mutual Non-Disclosure Agreement — Cover Page</Text>
+        <Text style={styles.title}>Acuerdo de Confidencialidad Mutuo — Portada</Text>
 
         <View style={styles.partyRow}>
           <View style={styles.partyBlock}>
-            <Text style={styles.partyLabel}>Party A</Text>
-            <Text>{values.partyAName || "[Name]"}</Text>
-            <Text>{values.partyAAddress || "[Address]"}</Text>
-            <Text>Signatory: {values.partyASignatory || "[Signatory]"}</Text>
+            <Text style={styles.partyLabel}>Parte A</Text>
+            <Text>{values.partyAName || "[Nombre]"}</Text>
+            <Text>{values.partyAAddress || "[Dirección]"}</Text>
+            <Text>Firmante: {values.partyASignatory || "[Firmante]"}</Text>
           </View>
           <View style={styles.partyBlock}>
-            <Text style={styles.partyLabel}>Party B</Text>
-            <Text>{values.partyBName || "[Name]"}</Text>
-            <Text>{values.partyBAddress || "[Address]"}</Text>
-            <Text>Signatory: {values.partyBSignatory || "[Signatory]"}</Text>
+            <Text style={styles.partyLabel}>Parte B</Text>
+            <Text>{values.partyBName || "[Nombre]"}</Text>
+            <Text>{values.partyBAddress || "[Dirección]"}</Text>
+            <Text>Firmante: {values.partyBSignatory || "[Firmante]"}</Text>
           </View>
         </View>
 
@@ -54,7 +54,7 @@ function NdaPdfDocument({ values }: { values: NdaFormData }) {
           ))}
         </View>
 
-        <Text style={styles.sectionTitle}>Standard Terms</Text>
+        <Text style={styles.sectionTitle}>Términos Estándar</Text>
         {NDA_CLAUSES.map((clause) => (
           <Text key={clause.number} style={styles.clause}>
             <Text style={styles.bold}>
