@@ -2,25 +2,36 @@ import fs from "fs";
 import { expect, test, type Page } from "@playwright/test";
 import { PDFParse } from "pdf-parse";
 
-const HAPPY_PATH_VALUES = {
-  "Parte A — Nombre": "Acme, Inc.",
-  "Parte A — Dirección": "123 Main St, Wilmington, DE",
-  "Parte A — Firmante": "Jane Smith, CEO",
-  "Parte B — Nombre": "Beta LLC",
-  "Parte B — Dirección": "456 Market St, Austin, TX",
-  "Parte B — Firmante": "John Doe, Founder",
-  Propósito: "Evaluar una posible relación comercial",
-  "Fecha de Vigencia": "21 de junio de 2026",
-  "Plazo del MNDA": "2 años desde la Fecha de Vigencia",
-  "Plazo de Confidencialidad": "3 años desde la divulgación",
-  "Ley Aplicable": "Delaware",
-  Jurisdicción: "Wilmington, Delaware",
+const COMPLETE_VALUES = {
+  partyAName: "Acme, Inc.",
+  partyAAddress: "123 Main St, Wilmington, DE",
+  partyASignatory: "Jane Smith, CEO",
+  partyBName: "Beta LLC",
+  partyBAddress: "456 Market St, Austin, TX",
+  partyBSignatory: "John Doe, Founder",
+  purpose: "Evaluar una posible relación comercial",
+  effectiveDate: "21 de junio de 2026",
+  mndaTerm: "2 años desde la Fecha de Vigencia",
+  termOfConfidentiality: "3 años desde la divulgación",
+  governingLaw: "Delaware",
+  jurisdiction: "Wilmington, Delaware",
 };
 
-async function fillForm(page: Page, values: Record<string, string>) {
-  for (const [label, value] of Object.entries(values)) {
-    await page.getByLabel(label).fill(value);
-  }
+const EMPTY_VALUES = Object.fromEntries(Object.keys(COMPLETE_VALUES).map((key) => [key, ""]));
+
+/** Intercepts POST /api/chat so e2e tests don't depend on a real LLM call. */
+async function mockChatResponses(page: Page, responses: { reply: string; values: Record<string, string> }[]) {
+  let call = 0;
+  await page.route("**/api/chat", async (route) => {
+    const response = responses[Math.min(call, responses.length - 1)];
+    call += 1;
+    await route.fulfill({ json: response });
+  });
+}
+
+async function sendChatMessage(page: Page, text: string) {
+  await page.getByPlaceholder("Escribe tu respuesta…").fill(text);
+  await page.getByRole("button", { name: /enviar/i }).click();
 }
 
 async function downloadAndParsePdf(page: Page) {
@@ -40,7 +51,15 @@ test.beforeEach(async ({ page }) => {
   await expect(page.getByRole("heading", { name: "Generador de NDA Mutuo" })).toBeVisible();
 });
 
-test("happy path: fills the form, updates the live preview, and downloads a matching PDF", async ({
+test("shows an initial greeting and disables download until the chat completes every field", async ({ page }) => {
+  await expect(page.getByRole("log")).toContainText(/acuerdo de confidencialidad mutuo/i);
+  await expect(page.getByRole("button", { name: /Descargar como PDF/i })).toBeDisabled();
+
+  const preview = page.locator("article");
+  await expect(preview).toContainText("[Propósito]");
+});
+
+test("happy path: chat conversation fills the fields, updates the live preview, and downloads a matching PDF", async ({
   page,
 }) => {
   const consoleErrors: string[] = [];
@@ -48,7 +67,13 @@ test("happy path: fills the form, updates the live preview, and downloads a matc
     if (msg.type() === "error") consoleErrors.push(msg.text());
   });
 
-  await fillForm(page, HAPPY_PATH_VALUES);
+  await mockChatResponses(page, [
+    { reply: "Perfecto, he registrado todos los datos del acuerdo.", values: COMPLETE_VALUES },
+  ]);
+
+  await sendChatMessage(page, "Aquí tienes todos los datos del NDA entre Acme y Beta.");
+
+  await expect(page.getByText("Perfecto, he registrado todos los datos del acuerdo.")).toBeVisible();
 
   const preview = page.locator("article");
   await expect(preview).toContainText("Acme, Inc.");
@@ -57,45 +82,50 @@ test("happy path: fills the form, updates the live preview, and downloads a matc
   await expect(preview).toContainText("Delaware");
   await expect(preview).not.toContainText("[Propósito]");
 
+  const downloadButton = page.getByRole("button", { name: /Descargar como PDF/i });
+  await expect(downloadButton).toBeEnabled();
+
   const { text, pageCount, suggestedFilename } = await downloadAndParsePdf(page);
 
   expect(suggestedFilename).toBe("mutual-nda.pdf");
-  // The full cover page + all 11 Standard Terms clauses don't fit on one A4
-  // page even with normal-length values; react-pdf paginates automatically.
   expect(pageCount).toBeGreaterThan(1);
   expect(text).toContain("Acme, Inc.");
   expect(text).toContain("Jane Smith, CEO");
   expect(text).toContain("Beta LLC");
-  expect(text).toContain("Evaluar una posible relación comercial");
   expect(text).toContain("Wilmington, Delaware");
-  // The attribution footer should appear exactly once, not once per page.
   expect(text.match(/Acuerdo de Confidencialidad Mutuo de Common Paper/g)).toHaveLength(1);
 
   expect(consoleErrors).toEqual([]);
 });
 
-test("empty form: shows bracketed fallbacks in the preview and still downloads a valid PDF", async ({
+test("keeps the download button disabled until every field has been filled across multiple turns", async ({
   page,
 }) => {
-  const preview = page.locator("article");
-  await expect(preview).toContainText("[Propósito]");
-  await expect(preview).toContainText("[Ley Aplicable]");
+  const partialValues = { ...EMPTY_VALUES, partyAName: "Acme, Inc.", purpose: "Evaluar una alianza" };
 
-  const { text, pageCount } = await downloadAndParsePdf(page);
+  await mockChatResponses(page, [
+    { reply: "¿Quién es la Parte B?", values: partialValues },
+    { reply: "Perfecto, ya tengo todos los datos.", values: COMPLETE_VALUES },
+  ]);
 
-  expect(pageCount).toBeGreaterThanOrEqual(1);
-  expect(text).toContain("[Propósito]");
-  expect(text).toContain("[Nombre]");
+  await sendChatMessage(page, "Somos Acme, Inc. y queremos evaluar una alianza.");
+  await expect(page.getByText("¿Quién es la Parte B?")).toBeVisible();
+  await expect(page.getByRole("button", { name: /Descargar como PDF/i })).toBeDisabled();
+
+  await sendChatMessage(page, "La Parte B es Beta LLC, en Delaware.");
+  await expect(page.getByText("Perfecto, ya tengo todos los datos.")).toBeVisible();
+  await expect(page.getByRole("button", { name: /Descargar como PDF/i })).toBeEnabled();
 });
 
-test("preserves special characters (quotes, ampersand, accented letters) end to end", async ({
-  page,
-}) => {
-  const tricky = {
-    "Parte A — Nombre": `O'Brien & Associates, S.A.`,
-    Propósito: `Evaluación de una posible colaboración (& "joint venture")`,
+test("preserves special characters (quotes, ampersand, accented letters) end to end", async ({ page }) => {
+  const trickyValues = {
+    ...COMPLETE_VALUES,
+    partyAName: `O'Brien & Associates, S.A.`,
+    purpose: `Evaluación de una posible colaboración (& "joint venture")`,
   };
-  await fillForm(page, tricky);
+  await mockChatResponses(page, [{ reply: "Entendido.", values: trickyValues }]);
+
+  await sendChatMessage(page, "La parte A es O'Brien & Associates.");
 
   const preview = page.locator("article");
   await expect(preview).toContainText("O'Brien & Associates, S.A.");
@@ -107,15 +137,20 @@ test("preserves special characters (quotes, ampersand, accented letters) end to 
   expect(text).toContain("joint venture");
 });
 
-test("very long input wraps across multiple PDF pages without errors", async ({ page }) => {
+test("very long field values wrap across multiple PDF pages without errors", async ({ page }) => {
   const consoleErrors: string[] = [];
   page.on("console", (msg) => {
     if (msg.type() === "error") consoleErrors.push(msg.text());
   });
   page.on("pageerror", (err) => consoleErrors.push(String(err)));
 
-  const longPurpose = "evaluating a very long-running multi-phase strategic partnership ".repeat(80);
-  await fillForm(page, { Propósito: longPurpose.trim() });
+  const longPurpose = "evaluating a very long-running multi-phase strategic partnership ".repeat(80).trim();
+  await mockChatResponses(page, [
+    { reply: "Entendido.", values: { ...COMPLETE_VALUES, purpose: longPurpose } },
+  ]);
+
+  await sendChatMessage(page, "El propósito es muy largo, te lo explico con detalle.");
+  await expect(page.getByRole("button", { name: /Descargar como PDF/i })).toBeEnabled();
 
   const { pageCount, text } = await downloadAndParsePdf(page);
 

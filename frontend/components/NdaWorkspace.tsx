@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import NdaForm from "@/components/NdaForm";
+import NdaChat from "@/components/NdaChat";
 import NdaPreview from "@/components/NdaPreview";
 import { downloadNdaPdf } from "@/lib/generatePdf";
 import { EMPTY_NDA_FORM_DATA, NdaFormData } from "@/types/nda";
@@ -9,10 +9,7 @@ import { EMPTY_NDA_FORM_DATA, NdaFormData } from "@/types/nda";
 export default function NdaWorkspace() {
   const [values, setValues] = useState<NdaFormData>(EMPTY_NDA_FORM_DATA);
   const [isDownloading, setIsDownloading] = useState(false);
-
-  function handleChange(key: keyof NdaFormData, value: string) {
-    setValues((prev) => ({ ...prev, [key]: value }));
-  }
+  const isComplete = Object.values(values).every((value) => value.trim() !== "");
 
   async function handleDownload() {
     setIsDownloading(true);
@@ -25,15 +22,15 @@ export default function NdaWorkspace() {
 
   return (
     <main className="grid flex-1 grid-cols-1 gap-6 p-6 lg:grid-cols-2">
-      <section className="rounded-lg border border-zinc-200 bg-white p-6">
-        <NdaForm values={values} onChange={handleChange} />
+      <section className="flex rounded-lg border border-zinc-200 bg-white p-6">
+        <NdaChat values={values} onValuesChange={setValues} />
       </section>
 
       <section className="flex flex-col gap-4">
         <button
           type="button"
           onClick={handleDownload}
-          disabled={isDownloading}
+          disabled={isDownloading || !isComplete}
           className="self-start rounded-md bg-zinc-900 px-4 py-2 text-sm font-medium text-white hover:bg-zinc-700 disabled:opacity-50"
         >
           {isDownloading ? "Generando PDF…" : "Descargar como PDF"}

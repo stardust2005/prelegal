@@ -4,6 +4,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 
+from app.chat import ChatRequest, ChatResponse, run_chat_turn
 from app.db import init_db
 
 
@@ -19,6 +20,11 @@ app = FastAPI(title="PreLegal API", lifespan=lifespan)
 @app.get("/api/health")
 def health_check() -> dict[str, str]:
     return {"status": "ok"}
+
+
+@app.post("/api/chat")
+def chat(request: ChatRequest) -> ChatResponse:
+    return run_chat_turn(request)
 
 
 # Declare new API routes above this line — the catch-all mount below
