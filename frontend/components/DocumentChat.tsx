@@ -3,31 +3,37 @@
 import { useEffect, useRef, useState } from "react";
 import { sendChatTurn } from "@/lib/chatClient";
 import { ChatMessage } from "@/types/chat";
-import { NdaFormData } from "@/types/nda";
+import { DocumentValues } from "@/types/document";
 
 const INITIAL_MESSAGE: ChatMessage = {
   role: "assistant",
   content:
-    "Hola, voy a ayudarte a preparar tu Acuerdo de Confidencialidad Mutuo (NDA). Cuéntame quiénes son las partes y para qué necesitáis el acuerdo, y te iré preguntando por el resto de los datos.",
+    "Hola, cuéntame qué documento legal necesitas (por ejemplo, un acuerdo de confidencialidad, un contrato de servicios, una licencia de software…) y te iré guiando para completarlo.",
 };
 
 const ERROR_FALLBACK_MESSAGE = "Hubo un problema al contactar con el asistente. Inténtalo de nuevo.";
 
-interface NdaChatProps {
-  values: NdaFormData;
-  onValuesChange: (values: NdaFormData) => void;
+interface DocumentChatProps {
+  documentId: string | null;
+  values: DocumentValues;
+  onTurn: (result: { documentId: string | null; values: DocumentValues }) => void;
 }
 
-export default function NdaChat({ values, onValuesChange }: NdaChatProps) {
+export default function DocumentChat({ documentId, values, onTurn }: DocumentChatProps) {
   const [messages, setMessages] = useState<ChatMessage[]>([INITIAL_MESSAGE]);
   const [input, setInput] = useState("");
   const [isSending, setIsSending] = useState(false);
   const logRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     const log = logRef.current;
     if (log) log.scrollTop = log.scrollHeight;
   }, [messages]);
+
+  useEffect(() => {
+    if (!isSending) inputRef.current?.focus();
+  }, [isSending]);
 
   async function handleSend() {
     const text = input.trim();
@@ -39,9 +45,9 @@ export default function NdaChat({ values, onValuesChange }: NdaChatProps) {
     setIsSending(true);
 
     try {
-      const { reply, values: updatedValues } = await sendChatTurn(nextMessages, values);
-      setMessages((prev) => [...prev, { role: "assistant", content: reply }]);
-      onValuesChange(updatedValues);
+      const result = await sendChatTurn(nextMessages, documentId, values);
+      setMessages((prev) => [...prev, { role: "assistant", content: result.reply }]);
+      onTurn({ documentId: result.documentId, values: result.values });
     } catch {
       setMessages((prev) => [...prev, { role: "assistant", content: ERROR_FALLBACK_MESSAGE }]);
     } finally {
@@ -80,6 +86,7 @@ export default function NdaChat({ values, onValuesChange }: NdaChatProps) {
         }}
       >
         <input
+          ref={inputRef}
           type="text"
           value={input}
           onChange={(e) => setInput(e.target.value)}

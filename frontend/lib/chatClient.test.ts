@@ -1,50 +1,57 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { sendChatTurn } from "@/lib/chatClient";
-import { EMPTY_NDA_FORM_DATA } from "@/types/nda";
 
 describe("sendChatTurn", () => {
   afterEach(() => {
     vi.unstubAllGlobals();
   });
 
-  it("posts the message history and current values to /api/chat", async () => {
+  it("posts the message history, document id and current values to /api/chat", async () => {
     const fetchMock = vi.fn().mockResolvedValue({
       ok: true,
-      json: async () => ({ reply: "Hola", values: EMPTY_NDA_FORM_DATA }),
+      json: async () => ({ reply: "Hola", document_id: null, values: {} }),
     });
     vi.stubGlobal("fetch", fetchMock);
 
     const messages = [{ role: "user" as const, content: "Hola" }];
-    await sendChatTurn(messages, EMPTY_NDA_FORM_DATA);
+    await sendChatTurn(messages, null, {});
 
     expect(fetchMock).toHaveBeenCalledWith(
       "/api/chat",
       expect.objectContaining({
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ messages, values: EMPTY_NDA_FORM_DATA }),
+        body: JSON.stringify({ messages, document_id: null, values: {} }),
       })
     );
   });
 
-  it("returns the parsed reply and values from a successful response", async () => {
-    const updatedValues = { ...EMPTY_NDA_FORM_DATA, purpose: "Evaluar una alianza" };
+  it("returns the parsed reply, documentId and values from a successful response", async () => {
+    const updatedValues = { proposito: "Evaluar una alianza" };
     vi.stubGlobal(
       "fetch",
       vi.fn().mockResolvedValue({
         ok: true,
-        json: async () => ({ reply: "¿Cuál es el propósito?", values: updatedValues }),
+        json: async () => ({
+          reply: "¿Cuál es la ley aplicable?",
+          document_id: "mutual-nda",
+          values: updatedValues,
+        }),
       })
     );
 
-    const result = await sendChatTurn([], EMPTY_NDA_FORM_DATA);
+    const result = await sendChatTurn([], "mutual-nda", {});
 
-    expect(result).toEqual({ reply: "¿Cuál es el propósito?", values: updatedValues });
+    expect(result).toEqual({
+      reply: "¿Cuál es la ley aplicable?",
+      documentId: "mutual-nda",
+      values: updatedValues,
+    });
   });
 
   it("throws when the response is not ok", async () => {
     vi.stubGlobal("fetch", vi.fn().mockResolvedValue({ ok: false }));
 
-    await expect(sendChatTurn([], EMPTY_NDA_FORM_DATA)).rejects.toThrow();
+    await expect(sendChatTurn([], null, {})).rejects.toThrow();
   });
 });

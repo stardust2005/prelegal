@@ -6,5 +6,5 @@
 **/*.pyc
 .git
 .claude
-Templates
 *.md
+!Templates/*.md

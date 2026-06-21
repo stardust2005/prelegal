@@ -10,7 +10,7 @@ Los documentos disponibles se encuentran en el archivo catalog.json, ubicado en 
 
 @catalog.json   
 
-La implementación actual soporta únicamente el documento Mutual NDA. El frontend tiene una pantalla de login falsa (sin autenticación real) que da paso al generador de NDA.
+La implementación actual soporta los 11 tipos de documento del catálogo. El frontend tiene una pantalla de login falsa (sin autenticación real) que da paso al generador de documentos.
 
 ## Proceso de desarrollo
 
@@ -53,13 +53,14 @@ Backend disponible en http://localhost:8000
 - Azul marino oscuro: `#032147` (encabezados)
 - Gris para texto: `#888888`
 
-## Estado actual (PL-5)
+## Estado actual (PL-6)
 
 Ya implementado:
 - Backend FastAPI/uv en `backend/`, con tabla `users` en SQLite recreada en cada arranque (solo esquema; sin endpoints de registro/login todavía).
 - Contenedor Docker único (`Dockerfile`, `docker-compose.yml`) que compila el export estático del frontend (`output: "export"` en `next.config.ts`) y lo sirve junto con la API desde FastAPI en el puerto 8000.
 - Scripts multiplataforma en `scripts/` (start/stop para mac, linux y windows).
-- Pantalla de login falsa en `/` (sin verificación real) que navega a `/app`, donde vive el generador de NDA (movido desde `/`).
-- Chat de IA (`POST /api/chat` en `backend/app/chat.py`, componente `NdaChat` en frontend) que sustituye al formulario plano: la IA conversa en español, pregunta por los 12 campos del Mutual NDA y los va rellenando con salida estructurada (LiteLLM/OpenRouter/Cerebras). El backend es sin estado; el frontend reenvía el historial completo en cada turno. El botón de descarga del PDF solo se habilita cuando los 12 campos están completos.
+- Pantalla de login falsa en `/` (sin verificación real) que navega a `/app`, donde vive el generador de documentos (movido desde `/`).
+- Parser de plantillas (`backend/app/templates.py`) que convierte cada `.md` de `Templates/` en una lista plana de campos y un cuerpo con placeholders `{{campo}}`, para los 11 documentos del catálogo.
+- Chat de IA (`POST /api/chat` en `backend/app/chat.py`, componentes `DocumentChat`/`DocumentWorkspace` en frontend) con dos modos sin estado: selección de documento (la IA decide qué documento del catálogo necesita el usuario, o sugiere el más parecido si pide algo no soportado) y relleno de campos (la IA pregunta y completa los campos del documento ya elegido, siempre con una pregunta de seguimiento mientras falte información). Ambos modos usan una sola llamada LLM con salida estructurada (LiteLLM/OpenRouter/Cerebras) y un modelo Pydantic dinámico por documento. El frontend reenvía el historial, el `document_id` y los `values` completos en cada turno; si el documento cambia a mitad de conversación, los valores se reinician. El botón de descarga del PDF solo se habilita cuando todos los campos del documento resuelto están completos.
 
-Pendiente: endpoints reales de registro/inicio de sesión, chat con IA para seleccionar el tipo de documento (de entre el catálogo), y soporte para el resto de documentos del catálogo.
+Pendiente: endpoints reales de registro/inicio de sesión.
