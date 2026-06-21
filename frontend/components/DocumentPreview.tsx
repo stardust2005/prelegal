@@ -27,7 +27,7 @@ export default function DocumentPreview({ document, values }: DocumentPreviewPro
             <a
               key={j}
               href={segment.href}
-              className="text-[#209dd7] underline"
+              className="text-primary underline"
               target="_blank"
               rel="noreferrer"
             >

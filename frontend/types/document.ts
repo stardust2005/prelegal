@@ -7,3 +7,10 @@ export interface DocumentDetail {
   fields: Record<string, string>;
   body: string;
 }
+
+export interface SavedDocument {
+  documentId: string;
+  documentName: string;
+  values: DocumentValues;
+  createdAt: string;
+}
