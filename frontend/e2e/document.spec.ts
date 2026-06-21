@@ -62,6 +62,10 @@ async function downloadAndParsePdf(page: Page) {
 }
 
 test.beforeEach(async ({ page }) => {
+  await page.route("**/api/auth/me", async (route) => {
+    await route.fulfill({ json: { email: "a@example.com" } });
+  });
+
   await page.goto("/app/");
   await expect(page.getByRole("heading", { name: "Generador de Documentos Legales" })).toBeVisible();
 });

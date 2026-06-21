@@ -10,7 +10,7 @@ Los documentos disponibles se encuentran en el archivo catalog.json, ubicado en 
 
 @catalog.json   
 
-La implementación actual soporta los 11 tipos de documento del catálogo. El frontend tiene una pantalla de login falsa (sin autenticación real) que da paso al generador de documentos.
+La implementación actual soporta los 11 tipos de documento del catálogo, con registro/inicio de sesión reales y un historial de documentos generados por usuario.
 
 ## Proceso de desarrollo
 
@@ -53,14 +53,17 @@ Backend disponible en http://localhost:8000
 - Azul marino oscuro: `#032147` (encabezados)
 - Gris para texto: `#888888`
 
-## Estado actual (PL-6)
+## Estado actual (PL-7)
 
 Ya implementado:
-- Backend FastAPI/uv en `backend/`, con tabla `users` en SQLite recreada en cada arranque (solo esquema; sin endpoints de registro/login todavía).
+- Backend FastAPI/uv en `backend/`, con tablas `users`, `sessions` y `documents` en SQLite recreadas en cada arranque.
 - Contenedor Docker único (`Dockerfile`, `docker-compose.yml`) que compila el export estático del frontend (`output: "export"` en `next.config.ts`) y lo sirve junto con la API desde FastAPI en el puerto 8000.
 - Scripts multiplataforma en `scripts/` (start/stop para mac, linux y windows).
-- Pantalla de login falsa en `/` (sin verificación real) que navega a `/app`, donde vive el generador de documentos (movido desde `/`).
 - Parser de plantillas (`backend/app/templates.py`) que convierte cada `.md` de `Templates/` en una lista plana de campos y un cuerpo con placeholders `{{campo}}`, para los 11 documentos del catálogo.
 - Chat de IA (`POST /api/chat` en `backend/app/chat.py`, componentes `DocumentChat`/`DocumentWorkspace` en frontend) con dos modos sin estado: selección de documento (la IA decide qué documento del catálogo necesita el usuario, o sugiere el más parecido si pide algo no soportado) y relleno de campos (la IA pregunta y completa los campos del documento ya elegido, siempre con una pregunta de seguimiento mientras falte información). Ambos modos usan una sola llamada LLM con salida estructurada (LiteLLM/OpenRouter/Cerebras) y un modelo Pydantic dinámico por documento. El frontend reenvía el historial, el `document_id` y los `values` completos en cada turno; si el documento cambia a mitad de conversación, los valores se reinician. El botón de descarga del PDF solo se habilita cuando todos los campos del documento resuelto están completos.
+- Registro e inicio de sesión reales (`backend/app/auth.py`): contraseñas con hash `bcrypt`, sesión por cookie `httpOnly` (`session_token`) resuelta contra la tabla `sessions`. Endpoints `POST /api/auth/register`, `POST /api/auth/login`, `POST /api/auth/logout`, `GET /api/auth/me`. `POST /api/chat` requiere sesión.
+- Historial de documentos por usuario (`backend/app/document_history.py`, tabla `documents` con upsert por `(user_id, document_id)`): cuando el chat completa todos los campos de un documento, se guarda automáticamente; `GET /api/history` lo lista (incluyendo el nombre legible del documento). Pantalla "Mis documentos" (`/app/documents`) para consultarlo y volver a descargar el PDF.
+- Frontend protegido: `app/app/layout.tsx` verifica la sesión vía `/api/auth/me` (client-side, ya que el sitio es un export estático sin servidor) y redirige a `/` si no hay sesión; incluye `Navbar` (usuario + cerrar sesión) y `Footer` con aviso legal. Pantallas reales de login (`/`) y registro (`/register`).
+- Paleta de colores centralizada como tokens de Tailwind (`@theme` en `globals.css`: `accent`, `primary`, `secondary`, `navy`, `muted`) y componentes de UI compartidos (`components/ui/Button.tsx`, `components/ui/Input.tsx`) usados en los formularios y el chat. Aviso de que los documentos son borradores sujetos a revisión legal, visible en el footer y de forma destacada junto al botón de descarga.
 
-Pendiente: endpoints reales de registro/inicio de sesión.
+Pendiente: nada bloqueante para el alcance actual del catálogo.

@@ -50,6 +50,12 @@ describe("DocumentWorkspace", () => {
     expect(screen.queryByText(/términos estándar/i)).not.toBeInTheDocument();
   });
 
+  it("shows a legal disclaimer that the document is a draft", () => {
+    render(<DocumentWorkspace />);
+
+    expect(screen.getByText(/borrador.*revisad.*legal/i)).toBeInTheDocument();
+  });
+
   it("fetches and renders the document detail once the chat resolves a documentId", async () => {
     mockedFetchDocumentDetail.mockResolvedValue(MUTUAL_NDA);
     render(<DocumentWorkspace />);

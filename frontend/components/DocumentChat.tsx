@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import Button from "@/components/ui/Button";
+import Input from "@/components/ui/Input";
 import { sendChatTurn } from "@/lib/chatClient";
 import { ChatMessage } from "@/types/chat";
 import { DocumentValues } from "@/types/document";
@@ -70,7 +72,7 @@ export default function DocumentChat({ documentId, values, onTurn }: DocumentCha
               "max-w-[85%] rounded-md px-3 py-2 text-sm",
               message.role === "assistant"
                 ? "self-start bg-zinc-100 text-zinc-900"
-                : "self-end bg-[#209dd7] text-white",
+                : "self-end bg-primary text-white",
             ].join(" ")}
           >
             {message.content}
@@ -85,22 +87,18 @@ export default function DocumentChat({ documentId, values, onTurn }: DocumentCha
           handleSend();
         }}
       >
-        <input
+        <Input
           ref={inputRef}
           type="text"
           value={input}
           onChange={(e) => setInput(e.target.value)}
           disabled={isSending}
           placeholder="Escribe tu respuesta…"
-          className="flex-1 rounded-md border border-zinc-300 px-3 py-2 text-sm text-zinc-900 focus:border-[#209dd7] focus:outline-none disabled:opacity-50"
+          className="flex-1 text-zinc-900"
         />
-        <button
-          type="submit"
-          disabled={isSending}
-          className="rounded-md bg-[#753991] px-4 py-2 text-sm font-medium text-white hover:bg-[#5f2d75] disabled:opacity-50"
-        >
+        <Button type="submit" disabled={isSending}>
           {isSending ? "Enviando…" : "Enviar"}
-        </button>
+        </Button>
       </form>
     </div>
   );
