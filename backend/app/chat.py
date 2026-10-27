@@ -78,6 +78,7 @@ def _call_llm(messages: list[dict[str, str]], response_format: type[BaseModel]) 
         messages=messages,
         response_format=response_format,
         reasoning_effort="low",
+        allowed_openai_params=["reasoning_effort"],
         extra_body=EXTRA_BODY,
     )
     return response_format.model_validate_json(response.choices[0].message.content)
